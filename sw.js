@@ -1,6 +1,6 @@
 // cache your all the files in the browser
 
-cacheName = "V2";
+cacheName = "V1";
 cacheAssets = [
     'index.html',
     './js/index.js'
@@ -9,6 +9,7 @@ cacheAssets = [
 // intall event
 self.addEventListener('install', event => {
     console.log('service worker has been installed')
+    // It will actually put the files in the browser cache
     event.waitUntil(
         caches
         .open(cacheName)
@@ -21,14 +22,13 @@ self.addEventListener('install', event => {
 });
 
 //activate event
-
 self.addEventListener('activate', event => {
     console.log('service worker is activated');
     // we do not want to have the unwanted cache; so remove those unwanted cache here
     event.waitUntil(
-        caches.keys().then(cacheName => {
+        caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheName.map( cache => {
+                cacheNames.map( cache => {
                     if (cache !== cacheName) {
                         console.log('Service worker cleared cache')
                         return caches.delete(cache);
@@ -40,7 +40,6 @@ self.addEventListener('activate', event => {
 });
 
 // fetch event
-
 self.addEventListener('fetch', event => {
     console.log('service worker has fetched');
     event.respondWith(
